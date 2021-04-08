@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:marketplace_online/Tabs/home_tab.dart';
+import 'package:marketplace_online/Widgets/CustomDrawer.dart';
 
 class HomeScreen extends StatelessWidget {
-
   final _pageController = PageController();
 
   @override
@@ -13,34 +13,34 @@ class HomeScreen extends StatelessWidget {
       children: <Widget>[
         Scaffold(
           body: HomeTab(),
-          drawer: CustomDrawer(_pageController),
-          floatingActionButton: CartButton(),
+          drawer: CustomDrawer(), //_pageController),
+          //floatingActionButton: CartButton(),
         ),
-        Scaffold(
-          appBar: AppBar(
-            title: Text("Produtos"),
-            centerTitle: true,
-          ),
-          drawer: CustomDrawer(_pageController),
-          body: ProductsTab(),
-          floatingActionButton: CartButton(),
-        ),
-        Scaffold(
-          appBar: AppBar(
-            title: Text("Lojas"),
-            centerTitle: true,
-          ),
-          body: PlacesTab(),
-          drawer: CustomDrawer(_pageController),
-        ),
-        Scaffold(
-          appBar: AppBar(
-            title: Text("Meus Pedidos"),
-            centerTitle: true,
-          ),
-          body: OrdersTab(),
-          drawer: CustomDrawer(_pageController),
-        )
+        // Scaffold(
+        //   appBar: AppBar(
+        //     title: Text("Produtos"),
+        //     centerTitle: true,
+        //   ),
+        //   drawer: CustomDrawer(_pageController),
+        //   body: ProductsTab(),
+        //   floatingActionButton: CartButton(),
+        // ),
+        // Scaffold(
+        //   appBar: AppBar(
+        //     title: Text("Lojas"),
+        //     centerTitle: true,
+        //   ),
+        //   body: PlacesTab(),
+        //   drawer: CustomDrawer(_pageController),
+        // ),
+        // Scaffold(
+        //   appBar: AppBar(
+        //     title: Text("Meus Pedidos"),
+        //     centerTitle: true,
+        //   ),
+        //   body: OrdersTab(),
+        //   drawer: CustomDrawer(_pageController),
+        // )
       ],
     );
   }
@@ -82,22 +82,22 @@ class HomeScreen extends StatelessWidget {
 // }
 
 /// This is the private State class that goes with MyStatefulWidget.
-class _MyStatefulWidgetState extends State<MyStatefulWidget> {
-  int _count = 0;
+// class _MyStatefulWidgetState extends State<MyStatefulWidget> {
+//   int _count = 0;
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Sample Code'),
-      ),
-      body: Center(child: Text('You have pressed the button $_count times.')),
-      backgroundColor: Colors.blueGrey.shade200,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => setState(() => _count++),
-        tooltip: 'Increment Counter',
-        child: const Icon(Icons.add),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text('Sample Code'),
+//       ),
+//       body: Center(child: Text('You have pressed the button $_count times.')),
+//       backgroundColor: Colors.blueGrey.shade200,
+//       floatingActionButton: FloatingActionButton(
+//         onPressed: () => setState(() => _count++),
+//         tooltip: 'Increment Counter',
+//         child: const Icon(Icons.add),
+//       ),
+//     );
+//   }
+// }

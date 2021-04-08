@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-//import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-//import 'package:transparent_image/transparent_image.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:transparent_image/transparent_image.dart';
 
-class HomeTab extends StatelessWidget {
+class HomeTab extends StatefulWidget {
+  @override
+  _HomeTabState createState() => _HomeTabState();
+}
+
+class _HomeTabState extends State<HomeTab> {
   @override
   Widget build(BuildContext context) {
     Widget _buildBodyBack() => Container(
@@ -26,13 +31,13 @@ class HomeTab extends StatelessWidget {
               backgroundColor: Colors.transparent,
               elevation: 0.0,
               flexibleSpace: FlexibleSpaceBar(
-                title: const Text("Novidades"),
+                title: const Text("Mercados"),
                 centerTitle: true,
               ),
             ),
             FutureBuilder<QuerySnapshot>(
               future: Firestore.instance
-                  .collection("home")
+                  .collection("logoMercados")
                   .orderBy("pos")
                   .getDocuments(),
               builder: (context, snapshot) {
@@ -57,7 +62,7 @@ class HomeTab extends StatelessWidget {
                     children: snapshot.data.documents.map((doc) {
                       return FadeInImage.memoryNetwork(
                         placeholder: kTransparentImage,
-                        image: doc.data["image"],
+                        image: doc.data["logoMercados"],
                         fit: BoxFit.cover,
                       );
                     }).toList(),
