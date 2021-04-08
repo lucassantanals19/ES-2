@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:marketplace_online/Model/Usuario.dart';
-import 'package:flutter/services.dart';
+import 'dart:async';
 
-import 'Login.dart';
+import 'package:flutter/material.dart';
+import 'package:marketplace_online/Model/Usuario.dart';
+import 'package:marketplace_online/Screens/Login.dart';
+//import 'package:marketplace_online/Model/Usuario.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class CadastroScreen extends StatefulWidget {
   @override
@@ -11,223 +12,128 @@ class CadastroScreen extends StatefulWidget {
 }
 
 class _CadastroScreenState extends State<CadastroScreen> {
-  TextEditingController _controllerNome = TextEditingController();
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passController = TextEditingController();
+  final _addressController = TextEditingController();
 
-  TextEditingController _controllerEmail = TextEditingController();
-
-  TextEditingController _controllerSenha = TextEditingController();
-
-  String _erroMensage = "";
-
-  void mensageDeCadastroRealizado() {
-    final snackBar = SnackBar(
-      behavior: SnackBarBehavior.floating,
-      elevation: 150,
-      content: Text("cadastro realizado"),
-    );
-
-    Scaffold.of(context).showSnackBar(snackBar);
-  }
+  final _formKey = GlobalKey<FormState>();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //Barra do topo do aplicativo
-      appBar: AppBar(
-        title: Text("Cadastro de Usuário"),
-      ),
-      //Corpo do aplicativo
-      //Toda essa tela do app foi construida dentro de widget container
-      //que mermite apenas um widget filho, que neste caso é um ListView
-      //O ListView permite por varios Widgetes nele sem que ocorra OverFlow na tela
-
-      body: Container(
-        color: Colors.white,
-        child: ListView(
-          children: <Widget>[
-            SizedBox(
-              height: 10,
-            ),
-
-            Center(
-              child: Text("Fazer Cadastro",
-                  style: TextStyle(
-                      color: Colors.yellow,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 18,
-                      fontStyle: FontStyle.italic)),
-            ),
-
-            //SizedBox para espacamento
-            SizedBox(
-              height: 20,
-            ),
-
-            //SizedBox para TextFormField do Nome do usuario
-            SizedBox(
-              child: Padding(
-                padding: EdgeInsets.only(left: 15, right: 15),
-                child: TextFormField(
-                  textCapitalization: TextCapitalization.words,
-                  controller: _controllerNome,
-                  autofocus: false,
-                  decoration: InputDecoration(
-                    icon: Icon(
-                      Icons.person,
-                      color: Colors.red,
-                    ),
-                    labelText: "Digite seu Nome Completo",
-                    labelStyle: TextStyle(
-                      color: Colors.lightBlueAccent,
-                      fontWeight: FontWeight.normal,
-                      fontSize: 12,
-                    ),
-                    border: UnderlineInputBorder(),
-                  ),
-                  onSaved: (String value) {},
-                  validator: (String value) {
-                    return value.contains('@')
-                        ? "Não é permitido uso de @"
-                        : null;
-                  },
-                ),
-              ),
-            ),
-
-            SizedBox(
-              height: 10,
-            ),
-
-            //Campo do Email
-            SizedBox(
-              child: Padding(
-                padding: EdgeInsets.only(left: 15, right: 15),
-                child: TextFormField(
-                  controller: _controllerEmail,
-                  autofocus: false,
-                  decoration: InputDecoration(
-                    icon: Icon(
-                      Icons.email,
-                      color: Colors.red,
-                    ),
-                    labelText: "Email*",
-                    labelStyle: TextStyle(
-                      color: Colors.lightBlueAccent,
-                      fontWeight: FontWeight.normal,
-                      fontSize: 12,
-                    ),
-                    border: UnderlineInputBorder(),
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            //Campo Senha
-            Padding(
-              padding: EdgeInsets.only(left: 15, right: 15),
-              child: TextFormField(
-                controller: _controllerSenha,
-                autofocus: false,
-                decoration: InputDecoration(
-                  icon: Icon(
-                    Icons.security,
-                    color: Colors.red,
-                  ),
-                  labelText: "Digite Sua Senha",
-                  labelStyle: TextStyle(
-                    color: Colors.lightBlueAccent,
-                    fontWeight: FontWeight.normal,
-                    fontSize: 12,
-                  ),
-                  border: UnderlineInputBorder(),
-                ),
-              ),
-            ),
-
-            FlatButton(
-              child: Text("Enviar"),
-              onPressed: () {
-                validarCampos();
-              },
-            ),
-            Text(_erroMensage)
-          ],
+        key: _scaffoldKey,
+        appBar: AppBar(
+          title: Text("Criar Conta"),
+          centerTitle: true,
         ),
-      ),
-    );
-  }
-
-//Validação dos campos
-  void validarCampos() {
-    String _nome = _controllerNome.text;
-    String _email = _controllerEmail.text;
-    String _senha = _controllerSenha.text;
-
-    if (_nome.isNotEmpty) {
-      if (_email.isNotEmpty) {
-        if (_senha.isNotEmpty) {
-          Usuario usuario = Usuario();
-          usuario.nome = _nome;
-          usuario.email = _email;
-          usuario.senha = _senha;
-
-          _cadastrarUsuario(usuario);
-        }
-      }
-    }
-  }
-
-  _cadastrarUsuario(Usuario usuario) {
-    FirebaseAuth auth = FirebaseAuth.instance;
-    auth
-        .createUserWithEmailAndPassword(
-            email: usuario.email, password: usuario.senha)
-        .then(
-      (firebaseuser) {
-        showDialog(
-            context: context,
-            builder: (BuildContext context) => AlertDialog(
-                  content: Text("Cadastro Realizado com Sucesso!"),
-                  actions: <Widget>[
-                    FlatButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) => Login(),
-                          ),
-                        );
-                      },
-                      child: Text("Ok!"),
-                    )
-                  ],
-                ));
-      },
-    ).catchError((error) {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) => AlertDialog(
-                content: Text("Cadastro Não Realizado, tente novamente!"),
-                actions: <Widget>[
-                  FlatButton(
-                    onPressed: () {
-                      Navigator.pop(context, "ok");
+        //body: ScopedModelDescendant<UserModel>(
+        //  builder: (context, child, model){
+        //    if(model.isLoading)
+        //      return Center(child: CircularProgressIndicator(),);
+        //   return Form(
+        body: ScopedModelDescendant<Usuario>(
+          builder: (context, child, model) {
+            return Form(
+              key: _formKey,
+              child: ListView(
+                padding: EdgeInsets.all(16.0),
+                children: <Widget>[
+                  TextFormField(
+                    controller: _nameController,
+                    decoration: InputDecoration(hintText: "Nome Completo"),
+                     validator: (text) {
+                       if (text.isEmpty) return "Nome Inválido!";
+                     },
+                  ),
+                  SizedBox(
+                    height: 16.0,
+                  ),
+                  TextFormField(
+                    controller: _emailController,
+                    decoration: InputDecoration(hintText: "E-mail"),
+                    keyboardType: TextInputType.emailAddress,
+                     validator: (text) {
+                      if (text.isEmpty || !text.contains("@"))
+                        return "E-mail inválido!";
                     },
-                    child: Text("Ok!"),
-                  )
-                ],
-              ));
+                  ),
+                  SizedBox(
+                    height: 16.0,
+                  ),
+                  TextFormField(
+                    controller: _passController,
+                    decoration: InputDecoration(hintText: "Senha"),
+                    obscureText: true,
+                     validator: (text) {
+                       if (text.isEmpty || text.length < 6)
+                         return "Senha inválida!";
+                     },
+                  ),
+                  SizedBox(
+                    height: 16.0,
+                  ),
+                  TextFormField(
+                    controller: _addressController,
+                    decoration: InputDecoration(hintText: "Endereço"),
+                     validator: (text) {
+                       if (text.isEmpty) return "Endereço inválido!";
+                    },
+                  ),
+                  SizedBox(
+                    height: 16.0,
+                  ),
+                  SizedBox(
+                    height: 44.0,
+                    child: RaisedButton(
+                      child: Text(
+                        "Criar Conta",
+                        style: TextStyle(
+                          fontSize: 18.0,
+                        ),
+                      ),
+                      textColor: Colors.white,
+                      color: Theme.of(context).primaryColor,
+                      onPressed: () {
+                        if (_formKey.currentState.validate()) {
+                          Map<String, dynamic> userData = {
+                            "name": _nameController.text,
+                            "email": _emailController.text,
+                            "address": _addressController.text
+                          };
 
-      setState(
-        () {
-          SnackBar erroMensage = SnackBar(
-            content: Text("Cadastro não realizado! Tente novamente"),
-          );
-          Scaffold.of(context).showSnackBar(erroMensage);
-        },
-      );
+                          model.login(
+                              userData: userData,
+                              pass: _passController.text,
+                              onSuccess: _onSuccess,
+                              onFail: _onFail);
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(builder: (context) => Login()));
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        )
+        //},
+        );
+    // );
+  }
+
+  void _onSuccess() {
+    _scaffoldKey.currentState.showSnackBar(SnackBar(
+      content: Text("Usuário criado com sucesso!"),
+      backgroundColor: Theme.of(context).primaryColor,
+      duration: Duration(seconds: 2),
+    ));
+    Future.delayed(Duration(seconds: 2)).then((_) {
+      Navigator.of(context).pop();
     });
   }
+
+  void _onFail() {}
 }

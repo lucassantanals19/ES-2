@@ -1,34 +1,51 @@
-class Usuario {
-  String _idUser;
-  String _nome;
-  String _email;
-  String _senha;
-  String _dataDeNascimento;
-  String _cpf;
-  String _numeroTelefone1;
-  String _numeroTelefone2;
-  String _enderecoLogradouro;
-  String _enderecoCidade;
-  String _enderecoNumero;
+import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
 
+class Usuario extends Model {
+  FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Usuario();
+  FirebaseUser firebaseUser;
 
-  String get nome => _nome;
+  Map<String, dynamic> userData = Map();
 
-  set nome(String value) {
-    _nome = value;
+  bool isLoading = false;
+
+  //Metodo para Login do usuario no aplicativo
+
+  void login(
+      {@required Map<String, dynamic> userData,
+      @required String pass,
+      @required VoidCallback onSuccess,
+      @required VoidCallback onFail}) {
+    isLoading = true;
+    notifyListeners();
+
+    _auth
+        .createUserWithEmailAndPassword(
+            email: userData["email"], password: pass)
+        .then((authResult) async {
+      firebaseUser = authResult.user;
+      await _salvarDadosDoUsuario(userData);
+    }).catchError((e) {});
   }
 
-  String get email => _email;
+  void logout() {}
 
-  set email(String value) {
-    _email = value;
+  void recuperarSenha() {}
+
+  //bool isLoggedIn() {}
+
+  Future<Null> _salvarDadosDoUsuario(Map<String, dynamic> userData) async {
+    this.userData = userData;
+    await Firestore.instance
+        .collection("usuarios")
+        .document(firebaseUser.uid)
+        .setData(userData);
   }
-
-  String get senha => _senha;
-
-  set senha(String value) {
-    _senha = value;
-  }
+  //Future<Void> currentUserUID() async {
+  //  firebaseUser = await _firebaseAuth.currentUser();
+  // }
 }

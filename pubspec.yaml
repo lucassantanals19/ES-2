@@ -26,9 +26,10 @@ dependencies:
   firebase_analytics: ^5.0.2
    # Add the dependencies for any other Firebase products you want to use in your app
   # For example, to use Firebase Authentication and Cloud Firestore
-  firebase_auth: ^0.14.0+5
+  firebase_auth: ^0.13.1+1
   cloud_firestore: ^0.12.9+5
   firebase_storage: ^3.0.1
+  scoped_model: ^1.1.0
 
   flutter:
     sdk: flutter
